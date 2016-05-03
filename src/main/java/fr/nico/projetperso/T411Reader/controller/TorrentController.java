@@ -1,5 +1,7 @@
 package fr.nico.projetperso.T411Reader.controller;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,9 +24,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.nico.projetperso.T411Reader.helper.AuthentificationHelper;
@@ -52,8 +57,14 @@ public class TorrentController {
 	
 	
 	@RequestMapping(value="/torrent/{limit}/{motClef}",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ListeTorrent> list(@PathVariable String motClef, @PathVariable String limit) throws Exception{
-		HttpEntity entity = authenticate(new HttpHeaders());
+	public ResponseEntity<ListeTorrent> list(@PathVariable String motClef, @PathVariable String limit) throws JsonParseException, JsonMappingException, IOException{
+		HttpEntity entity;
+		ResponseEntity httpStatus = new ResponseEntity<Void>(HttpStatus.OK);
+		try {
+			entity = authAndPrepareHeaders(new HttpHeaders());
+		} catch (Exception e) {
+			return httpStatus;
+		}
 		ResponseEntity<String> t =  restTemplate.exchange(URLHelper.constructSearchListUrl(motClef, limit),HttpMethod.GET, entity, String.class);
 		ObjectMapper o = new ObjectMapper();
 		ListeTorrent l = o.readValue(t.getBody(),ListeTorrent.class);
@@ -61,21 +72,35 @@ public class TorrentController {
 	}
 
 	@RequestMapping(value="/torrent/download/{id}",method=RequestMethod.GET)
-	public ResponseEntity download(@PathVariable String id) throws Exception{
+	public ResponseEntity<Void> download(@PathVariable String id) throws UnsupportedEncodingException{
+		
 		HttpHeaders headers = new HttpHeaders();
+		ResponseEntity<Void> httpStatus = new ResponseEntity<Void>(HttpStatus.OK);
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
-		HttpEntity entity = authenticate(headers);
+		HttpEntity entity = null;
+		try {
+			entity = authAndPrepareHeaders(headers);
+		} catch (Exception e1) {
+			httpStatus = new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
+			return httpStatus;
+		}
+		
 		ResponseEntity<byte[]> t =  restTemplate.exchange(URLHelper.constructDownloadUrl(id),HttpMethod.GET, entity, byte[].class);
-	    Files.write(Paths.get( TORRENT_FOLDER + "/" + id + ".torrent" ), t.getBody() );
-		return new ResponseEntity<>(HttpStatus.OK);
+		
+	    try {
+			Files.write(Paths.get( TORRENT_FOLDER + "/" + id + ".torrent" ), t.getBody() );
+		} catch (IOException e) {
+			httpStatus = new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return httpStatus;
 	}
 	
-	private HttpEntity<String> authenticate(HttpHeaders headers) throws Exception{
+	private HttpEntity<String> authAndPrepareHeaders(HttpHeaders headers) throws Exception{
 		AuthentificationHelper.initTokenFromT411(new PasswordAuthentication(username, password));
 		headers.set("Authorization",ConnectionUtil.getInstance().getToken());
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		return new HttpEntity<String>("parameters", headers);
 	}
-
+	
 	
 }
