@@ -88,7 +88,10 @@ public class TorrentController {
 		ResponseEntity<byte[]> t =  restTemplate.exchange(URLHelper.constructDownloadUrl(id),HttpMethod.GET, entity, byte[].class);
 		
 	    try {
-			Files.write(Paths.get( TORRENT_FOLDER + "/" + id + ".torrent" ), t.getBody() );
+	    	if(t.getStatusCode().is2xxSuccessful())
+	    		Files.write(Paths.get( TORRENT_FOLDER + "/" + id + ".torrent" ), t.getBody() );
+	    	else
+	    		httpStatus = new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		} catch (IOException e) {
 			httpStatus = new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
