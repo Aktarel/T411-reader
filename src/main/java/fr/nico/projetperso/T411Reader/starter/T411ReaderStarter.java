@@ -9,6 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableAutoConfiguration
 public class T411ReaderStarter {
 	public static void main(String[] args) {
-		  SpringApplication.run(T411ReaderStarter.class, args);
+		SpringApplication.run(T411ReaderStarter.class, args);
 	}
 }

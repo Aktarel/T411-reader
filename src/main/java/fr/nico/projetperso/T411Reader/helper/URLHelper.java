@@ -14,13 +14,18 @@ public class URLHelper {
 	 * @returns
 	 * @throws UnsupportedEncodingException 
 	 */
-	public static String constructSearchListUrl(String motClef, String limit) throws UnsupportedEncodingException {
+	public static String constructSearchListUrl(String motClef, String limit)  {
 
-		StringBuilder sb = new StringBuilder(BASED_URL)
-				.append("search/")
-				.append(URLEncoder.encode(motClef, "UTF-8"))
-				.append("?limit=")
-				.append(limit);
+		StringBuilder sb = null;
+		try {
+			sb = new StringBuilder(BASED_URL)
+					.append("search/")
+					.append(URLEncoder.encode(motClef, "UTF-8"))
+					.append("?limit=")
+					.append(limit);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		return sb.toString();
 	}
 	
@@ -29,7 +34,7 @@ public class URLHelper {
 	 * @returns
 	 * @throws UnsupportedEncodingException 
 	 */
-	public static String constructDownloadUrl(String idTorrent) throws UnsupportedEncodingException {
+	public static String constructDownloadUrl(String idTorrent)  {
 		StringBuilder sb = new StringBuilder(BASED_URL)
 				.append("download/")
 				.append(idTorrent);
