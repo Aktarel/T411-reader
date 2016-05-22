@@ -10,6 +10,7 @@ import javax.security.sasl.AuthenticationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.nico.projetperso.T411Reader.model.UserAuthentification;
+import fr.nico.projetperso.T411Reader.util.ConnectionUtil;
 
 public class AuthentificationHelper {
 

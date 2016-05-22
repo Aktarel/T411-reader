@@ -10,17 +10,16 @@ public class URLHelper {
 	private static String BASED_URL = "http://api.t411.ch/torrents/";
 	
 	/**
-	 * @param motClef
-	 * @returns
-	 * @throws UnsupportedEncodingException 
+	 * @param keyword
+	 * @returns full constructed url
 	 */
-	public static String constructSearchListUrl(String motClef, String limit)  {
+	public static String constructSearchListUrl(String keyword, String limit)  {
 
 		StringBuilder sb = null;
 		try {
 			sb = new StringBuilder(BASED_URL)
 					.append("search/")
-					.append(URLEncoder.encode(motClef, "UTF-8"))
+					.append(URLEncoder.encode(keyword, "UTF-8"))
 					.append("?limit=")
 					.append(limit);
 		} catch (UnsupportedEncodingException e) {
@@ -30,9 +29,8 @@ public class URLHelper {
 	}
 	
 	/**
-	 * @param motClef
-	 * @returns
-	 * @throws UnsupportedEncodingException 
+	 * @param idTorrent
+	 * @returns full constructed url
 	 */
 	public static String constructDownloadUrl(String idTorrent)  {
 		StringBuilder sb = new StringBuilder(BASED_URL)

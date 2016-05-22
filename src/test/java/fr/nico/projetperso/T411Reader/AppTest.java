@@ -1,11 +1,5 @@
 package fr.nico.projetperso.T411Reader;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import fr.nico.projetperso.T411Reader.helper.AuthentificationHelper;
-import fr.nico.projetperso.T411Reader.helper.ConnectionUtil;
-import fr.nico.projetperso.T411Reader.service.ResponseService;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

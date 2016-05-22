@@ -1,4 +1,4 @@
-package fr.nico.projetperso.T411Reader.helper;
+package fr.nico.projetperso.T411Reader.util;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -8,6 +8,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 
+/**
+ * @author Akta
+ * @version 0.1
+ */
 public class ConnectionUtil {
 
 	private String token;
@@ -46,6 +50,13 @@ public class ConnectionUtil {
 	private ConnectionUtil() {
 	}
 
+	/**
+	 * @param connection
+	 * @param method
+	 * @param urlParameters
+	 * @return StringBuilder
+	 * @throws IOException
+	 */
 	public StringBuilder sendRequest(HttpURLConnection connection, String method, String urlParameters) throws IOException {
 		connection.setRequestMethod(method);
 		if (token != null && !token.isEmpty()) {
