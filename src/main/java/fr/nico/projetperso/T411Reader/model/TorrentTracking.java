@@ -1,15 +1,20 @@
 package fr.nico.projetperso.T411Reader.model;
 
-import java.util.Date;
-
 public class TorrentTracking {
 
 	private String comment; 
-	private String createdBy ; 
-	private Date creationDate; 
 	private String name;
 	private boolean seeder;
-	private long size; 
+	private String size;
+	private String left;
+	
+	public String getLeft() {
+		return left;
+	}
+	public void setLeft(String left) {
+		this.left = left;
+	}
+	private boolean finished;
 
 
 	public String getComment() {
@@ -17,18 +22,6 @@ public class TorrentTracking {
 	}
 	public void setComment(String comment) {
 		this.comment = comment;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public Date getCreationDate() {
-		return creationDate;
-	}
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
 	}
 	public String getName() {
 		return name;
@@ -42,11 +35,17 @@ public class TorrentTracking {
 	public void setSeeder(boolean seeder) {
 		this.seeder = seeder;
 	}
-	public long getSize() {
+	public String getSize() {
 		return size;
 	}
-	public void setSize(long size) {
+	public void setSize(String size) {
 		this.size = size;
+	}
+	public boolean isFinished() {
+		return finished;
+	}
+	public void setFinished(boolean finished) {
+		this.finished = finished;
 	}
 	
 }
