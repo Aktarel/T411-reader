@@ -15,6 +15,7 @@ import fr.nico.projetperso.T411Reader.manager.TorrentTrackerManager;
 import fr.nico.projetperso.T411Reader.model.TorrentTracking;
 
 @RestController
+@RequestMapping("/tclient")
 public class TorrentController {
 
 	@Autowired

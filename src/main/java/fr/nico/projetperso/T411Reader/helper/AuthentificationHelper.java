@@ -7,6 +7,8 @@ import java.net.URL;
 
 import javax.security.sasl.AuthenticationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.nico.projetperso.T411Reader.model.UserAuthentification;
@@ -14,6 +16,9 @@ import fr.nico.projetperso.T411Reader.util.ConnectionUtil;
 
 public class AuthentificationHelper {
 
+	@Autowired
+	public static ObjectMapper objectMapper;
+	
 	/**
 	 * @param auth
 	 * @throws IOException 
@@ -30,8 +35,7 @@ public class AuthentificationHelper {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		ConnectionUtil util = ConnectionUtil.getInstance();
 		String response = util.sendRequest(connection,"POST", urlParameters.toString()).toString();
-        ObjectMapper o = new ObjectMapper();
-        UserAuthentification u = o.readValue(response.toString(), UserAuthentification.class);
+        UserAuthentification u = objectMapper.readValue(response.toString(), UserAuthentification.class);
 		if(u.getToken() == null || u.getToken().isEmpty())
 			throw new AuthenticationException("Pas de token");
 		

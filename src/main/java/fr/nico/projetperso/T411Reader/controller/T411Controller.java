@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.nico.projetperso.T411Reader.manager.TorrentTrackerManager;
 import fr.nico.projetperso.T411Reader.model.ListeTorrent;
 import fr.nico.projetperso.T411Reader.service.TorrentService;
 
 @RestController
+@RequestMapping("/t411")
 public class T411Controller {
 
 	@Autowired
