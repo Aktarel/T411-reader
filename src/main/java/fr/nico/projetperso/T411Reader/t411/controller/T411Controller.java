@@ -1,4 +1,4 @@
-package fr.nico.projetperso.T411Reader.controller;
+package fr.nico.projetperso.T411Reader.t411.controller;
 
 import java.io.IOException;
 
@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.nico.projetperso.T411Reader.model.ListeTorrent;
-import fr.nico.projetperso.T411Reader.service.TorrentService;
+import fr.nico.projetperso.T411Reader.t411.model.ListeTorrent;
+import fr.nico.projetperso.T411Reader.t411.services.impl.T411TorrentService;
 
 @RestController
 @RequestMapping("/t411")
 public class T411Controller {
 
 	@Autowired
-	private TorrentService services;
+	private T411TorrentService services;
 	
 	@RequestMapping(value = "/torrent/{limit}/{motClef}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ListeTorrent> list(@PathVariable String motClef, @PathVariable String limit)

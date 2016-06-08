@@ -1,4 +1,4 @@
-package fr.nico.projetperso.T411Reader.helper;
+package fr.nico.projetperso.T411Reader.common.util;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fr.nico.projetperso.T411Reader.model.UserAuthentification;
-import fr.nico.projetperso.T411Reader.util.ConnectionUtil;
+import fr.nico.projetperso.T411Reader.t411.model.UserAuthentification;
 
 public class AuthentificationHelper {
 
@@ -33,7 +32,7 @@ public class AuthentificationHelper {
 					.append(String.valueOf(auth.getPassword()));
 		
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		ConnectionUtil util = ConnectionUtil.getInstance();
+		ConnectionHelper util = ConnectionHelper.getInstance();
 		String response = util.sendRequest(connection,"POST", urlParameters.toString()).toString();
         UserAuthentification u = objectMapper.readValue(response.toString(), UserAuthentification.class);
 		if(u.getToken() == null || u.getToken().isEmpty())

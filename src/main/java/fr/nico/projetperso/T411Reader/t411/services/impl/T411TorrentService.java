@@ -1,4 +1,4 @@
-package fr.nico.projetperso.T411Reader.service;
+package fr.nico.projetperso.T411Reader.t411.services.impl;
 
 import java.io.IOException;
 import java.net.PasswordAuthentication;
@@ -24,11 +24,12 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fr.nico.projetperso.T411Reader.helper.AuthentificationHelper;
-import fr.nico.projetperso.T411Reader.helper.URLHelper;
-import fr.nico.projetperso.T411Reader.manager.TorrentTrackerManager;
-import fr.nico.projetperso.T411Reader.model.ListeTorrent;
-import fr.nico.projetperso.T411Reader.util.ConnectionUtil;
+import fr.nico.projetperso.T411Reader.common.util.AuthentificationHelper;
+import fr.nico.projetperso.T411Reader.common.util.ConnectionHelper;
+import fr.nico.projetperso.T411Reader.common.util.URLUtils;
+import fr.nico.projetperso.T411Reader.t411.model.ListeTorrent;
+import fr.nico.projetperso.T411Reader.t411.services.IT411TorrentService;
+import fr.nico.projetperso.T411Reader.tracking.services.TorrentTrackingService;
 
 /**
  * Torrent service layer
@@ -37,7 +38,7 @@ import fr.nico.projetperso.T411Reader.util.ConnectionUtil;
  * @version 0.1
  */
 @Service
-public class TorrentService {
+public class T411TorrentService implements IT411TorrentService {
 
 	@Value("${t411.username}")
 	private String username;
@@ -52,7 +53,7 @@ public class TorrentService {
 	private String TORRENT_FINISHED_FOLDER;
 	
 	@Autowired
-	private TorrentClient client;
+	private TorrentTrackingService client;
 	
 	/**
 	 * Template
@@ -63,9 +64,8 @@ public class TorrentService {
 	/**
 	 * Constructuer
 	 */
-	public TorrentService() {
+	public T411TorrentService() {
 		restTemplate = new RestTemplate();
-	
 	}
 	
 	public void download(String idTorrent) throws IOException {
@@ -80,11 +80,11 @@ public class TorrentService {
 			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
 		}
 
-		ResponseEntity<byte[]> t = restTemplate.exchange(URLHelper.constructDownloadUrl(idTorrent), HttpMethod.GET, entity,
+		ResponseEntity<byte[]> t = restTemplate.exchange(URLUtils.constructDownloadUrl(idTorrent), HttpMethod.GET, entity,
 				byte[].class);
 
-		// T411 ne gère pas les code retour 4xx
-		// Hack pour déterminer que le body ne contient pas de fichier
+		// T411 send status code 200 without flux
+		// Hack to found if message > 150 bytes 
 		boolean isNotFound = t.getBody().length < 150;
 		try {
 			if (!isNotFound){
@@ -115,7 +115,7 @@ public class TorrentService {
 		} catch (AuthenticationException e) {
 			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
 		}
-		ResponseEntity<String> t = restTemplate.exchange(URLHelper.constructSearchListUrl(keyword, limit),
+		ResponseEntity<String> t = restTemplate.exchange(URLUtils.constructSearchListUrl(keyword, limit),
 				HttpMethod.GET, entity, String.class);
 		ObjectMapper o = new ObjectMapper();
 		ListeTorrent l = o.readValue(t.getBody(), ListeTorrent.class);
@@ -125,12 +125,12 @@ public class TorrentService {
 	/**
 	 * auth get token and add header Authorization with t411 token
 	 * @param headers
-	 * @return
+	 * @return HttpEntity<String>
 	 * @throws IOException
 	 */
-	private HttpEntity<String> authAndPrepareHeaders(HttpHeaders headers) throws IOException  {
+	public HttpEntity<String> authAndPrepareHeaders(HttpHeaders headers) throws IOException  {
 		AuthentificationHelper.initTokenFromT411(new PasswordAuthentication(username, password));
-		headers.set("Authorization", ConnectionUtil.getInstance().getToken());
+		headers.set("Authorization", ConnectionHelper.getInstance().getToken());
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		return new HttpEntity<String>("parameters", headers);
 	}

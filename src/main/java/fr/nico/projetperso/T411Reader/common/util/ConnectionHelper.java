@@ -1,4 +1,4 @@
-package fr.nico.projetperso.T411Reader.util;
+package fr.nico.projetperso.T411Reader.common.util;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -6,49 +6,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 
 /**
  * @author Akta
  * @version 0.1
  */
-public class ConnectionUtil {
+public class ConnectionHelper {
 
 	private String token;
 
-	private static ConnectionUtil instance;
-	
-	
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public static ConnectionUtil getInstance(String token) {
-		if (instance == null) {
-			instance = new ConnectionUtil(token);
-		}
-		return instance;
-
-	}
-
-	public static ConnectionUtil getInstance() {
-		if (instance == null) {
-			instance = new ConnectionUtil();
-		}
-
-		return instance;
-	}
-
-	private ConnectionUtil(String token) {
-		this.token = token;
-	}
-
-	private ConnectionUtil() {
-	}
+	private static ConnectionHelper instance;
 
 	/**
 	 * @param connection
@@ -91,5 +58,38 @@ public class ConnectionUtil {
 			}
 		}
 		return response;
+	}
+	
+	
+	
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public static ConnectionHelper getInstance(String token) {
+		if (instance == null) {
+			instance = new ConnectionHelper(token);
+		}
+		return instance;
+
+	}
+
+	public static ConnectionHelper getInstance() {
+		if (instance == null) {
+			instance = new ConnectionHelper();
+		}
+
+		return instance;
+	}
+
+	private ConnectionHelper(String token) {
+		this.token = token;
+	}
+
+	private ConnectionHelper() {
 	}
 }

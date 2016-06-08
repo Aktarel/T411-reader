@@ -1,11 +1,11 @@
-package fr.nico.projetperso.T411Reader.helper;
+package fr.nico.projetperso.T411Reader.common.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.springframework.beans.factory.annotation.Value;
 
-public class URLHelper {
+public class URLUtils {
 
 	private static String BASED_URL = "http://api.t411.ch/torrents/";
 	
