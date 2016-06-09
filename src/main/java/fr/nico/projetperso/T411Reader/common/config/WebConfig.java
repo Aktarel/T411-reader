@@ -6,6 +6,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.script.ScriptTemplateConfigurer;
 import org.springframework.web.servlet.view.script.ScriptTemplateViewResolver;
 
@@ -19,11 +20,17 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         //1. Nashorn jdk8 script engine.
         configurer.setEngineName("nashorn");
         //2. Add mustache.min.js and custom render.js to Nashorn
-        configurer.setScripts("/scripts/mustache.min.js", "/scripts/render.js");
+        configurer.setScripts("/META-INF/resources/scripts/polyfill.js",
+        			"/META-INF/resources/scripts/ejs.min.js",
+        			"/META-INF/resources/scripts/render.js",
+        			"/resources/scripts/components/hello.js");
         //3. Ask Nashorn to run this function "render()"
-        configurer.setRenderFunction("render");
+        configurer.setRenderFunction("renderServer");
+        configurer.setSharedEngine(false);
         return configurer;
     }
+    
+    
 
     /**
      * @return
@@ -32,15 +39,18 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public ViewResolver viewResolver() {
         ScriptTemplateViewResolver viewResolver = new ScriptTemplateViewResolver();
         viewResolver.setPrefix("/templates/");
-        viewResolver.setSuffix(".html");
+        viewResolver.setSuffix(".html"); 
         return viewResolver;
     }
 
-	/* (non-Javadoc)
-	 * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry)
-	 */
+    @Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/resources/**").addResourceLocations("/resources");
+    	registry
+        .addResourceHandler("/resources/**")
+        .addResourceLocations("/resources/")
+        .setCachePeriod(3600)
+        .resourceChain(true)
+        .addResolver(new PathResourceResolver());
 	}
 
 }
