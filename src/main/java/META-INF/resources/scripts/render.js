@@ -1,5 +1,6 @@
 function renderServer(template, model, url) {
     var data = toJsonObject(model);
+    print(data);
     return new EJS({text: template}).render(data);
 }
 

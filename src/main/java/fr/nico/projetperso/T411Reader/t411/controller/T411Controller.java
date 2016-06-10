@@ -28,7 +28,7 @@ public class T411Controller {
 		return new ResponseEntity<>(l, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/torrent/download/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/torrent/download/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Void> download(@PathVariable String id) throws IOException {
 		services.download(id);
 		return new ResponseEntity<Void>(HttpStatus.CREATED);

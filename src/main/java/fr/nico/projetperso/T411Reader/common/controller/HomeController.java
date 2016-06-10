@@ -1,7 +1,8 @@
 package fr.nico.projetperso.T411Reader.common.controller;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,16 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class HomeController {
-
-    @RequestMapping("/")
+	
+	@Resource(name="services")
+	List services;
+	
+	@RequestMapping(value="/")
     public String index(Model model) {
-    	List<String> services = new ArrayList<String>();
-    	services.add("First");
-    	services.add("Second");
-    	services.add("Third");
-    	model.addAttribute("services", services);
+    	model.addAttribute("rest", services);
         return "index";
     }
-    
+
+
 }
 	
